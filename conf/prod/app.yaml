@@ -1,0 +1,56 @@
+# 全局配置
+Global:
+  env: prod
+  gin_mode: debug # gin 框架允许环境 debug | release | test
+
+# 服务配置
+Server:
+  ip: 0.0.0.0
+  port: 8080
+  read_timeout: 2000 # 读超时 ms
+  write_timeout: 2000 # 写超时 ms
+
+# 数据库配置
+Database:
+  cine_stream:
+    host: mysql
+    port: 3306
+    name: cine_stream
+    user: "root"
+    pass: "root"
+    table_prefix: "cine_"
+    conn_max_idle: 20
+    conn_max_connection: 200
+    conn_max_lifetime: 200 # 单位 s
+    log_sql: false # 是否输出 SQL 日志到 access.log，默认 false
+    table_config:
+      - table_name: cine_video_ts
+        sharding_num: 1
+
+# 日志配置
+Logger:
+  default:
+    - writer: console
+      level: debug
+    - writer: file
+      level: info
+      formatter: json
+      writer_config:
+        filename: ./logs/access.log
+        max_age: 7
+        max_backups: 10
+        compress: false
+        max_size: 10
+
+# 认证配置
+Auth:
+  jwt_secret: "cine_stream_login_jwt"
+  expire_hours: 3
+  passport:
+    endpoint: "http://host.docker.internal:7070"                    # Passport 服务地址
+    client_id: "a0e8f75e95c3bf6fccb8"                   # 客户端ID
+    client_secret: "417763a3931e3965707a3539576d6dbf04b2c0f7"  # 客户端密钥
+    certificate_path: "./conf/movie.pem"                      # 证书文件路径（PEM格式）
+    organization_name: "movie"                           # 组织名称
+    application_name: "movie"                            # 应用名称
+    play_rights_api: "/api/get-user-play-rights"        # 播放权限接口路径（相对于 endpoint）

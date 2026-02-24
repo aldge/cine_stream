@@ -1,0 +1,1826 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Cine Stream API",
+    "description": "视频流媒体服务 API 文档",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Cine Stream API Support"
+    }
+  },
+  "host": "localhost:8088",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "tags": [
+    {
+      "name": "Demo",
+      "description": "演示接口"
+    },
+    {
+      "name": "VideoTS",
+      "description": "视频 TS 切片相关接口"
+    },
+    {
+      "name": "Play",
+      "description": "播放相关接口"
+    },
+    {
+      "name": "Provide",
+      "description": "资源提供相关接口"
+    }
+  ],
+  "paths": {
+    "/demo/index": {
+      "get": {
+        "tags": ["Demo"],
+        "summary": "演示接口",
+        "description": "返回简单的 hello 消息",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            },
+            "examples": {
+              "application/json": {
+                "code": 0,
+                "message": "",
+                "data": "hello, this is cine_stream"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/video_ts/save": {
+      "post": {
+        "tags": ["VideoTS"],
+        "summary": "保存视频的 TS 切片",
+        "description": "批量保存视频的 TS 切片和加密信息",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VideoTSSaveRequest"
+            },
+            "description": "请求体"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            },
+            "examples": {
+              "application/json": {
+                "code": 0,
+                "message": "",
+                "data": {
+                  "video_id": "video_123"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "paramError": {
+                  "code": 1001,
+                  "message": "参数绑定失败",
+                  "data": {}
+                },
+                "saveError": {
+                  "code": 1002,
+                  "message": "批量保存TS切片失败",
+                  "data": {}
+                },
+                "encryptError": {
+                  "code": 1003,
+                  "message": "保存视频加密信息失败",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/video_ts/list": {
+      "get": {
+        "tags": ["VideoTS"],
+        "summary": "获取 TS 切片列表",
+        "description": "根据视频 ID 和清晰度获取 TS 切片列表",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "video_id",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "视频 ID",
+            "example": "video_123"
+          },
+          {
+            "name": "definitions",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "清晰度（可选）",
+            "example": "720p"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            },
+            "examples": {
+              "application/json": {
+                "code": 0,
+                "message": "",
+                "data": {
+                  "ts_list": [
+                    {
+                      "video_ts_id": 1,
+                      "video_id": "video_123",
+                      "ts_sequence": 0,
+                      "ts_path": "https://example.com/ts0.ts",
+                      "duration": 10.416,
+                      "definition": "720p",
+                      "create_time": 1609459200
+                    },
+                    {
+                      "video_ts_id": 2,
+                      "video_id": "video_123",
+                      "ts_sequence": 1,
+                      "ts_path": "https://example.com/ts1.ts",
+                      "duration": 6.833,
+                      "definition": "720p",
+                      "create_time": 1609459200
+                    }
+                  ],
+                  "video_id": "video_123",
+                  "definitions": "720p"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "paramError": {
+                  "code": 1001,
+                  "message": "视频ID不能为空",
+                  "data": {}
+                },
+                "queryError": {
+                  "code": 1002,
+                  "message": "查询TS切片列表失败",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/play/{video_id}": {
+      "get": {
+        "tags": ["Play"],
+        "summary": "获取播放的主 M3U8 文件",
+        "description": "返回主 M3U8 文件，包含流信息",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "视频 ID",
+            "example": "video_123"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应，返回 M3U8 文件内容",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "application/vnd.apple.mpegurl": "#EXTM3U\n#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=4096000,RESOLUTION=1920x1080\n/play/video_123/index.m3u8?app=default"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "code": 1001,
+                "message": "视频ID不能为空",
+                "data": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/play/{video_id}/index.m3u8": {
+      "get": {
+        "tags": ["Play"],
+        "summary": "获取播放的 HLS M3U8 文件",
+        "description": "返回 HLS 格式的 M3U8 播放列表文件",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "视频 ID",
+            "example": "video_123"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应，返回 M3U8 文件内容",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "application/vnd.apple.mpegurl": "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:10\n#EXT-X-MEDIA-SEQUENCE:0\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-KEY:METHOD=AES-128,URI=\"/play/key/video_123?app=default\",IV=0x00000000000000000000000000000000\n#EXTINF:10.416,\nhttps://example.com/ts0.ts\n#EXTINF:6.833,\nhttps://example.com/ts1.ts\n#EXT-X-ENDLIST"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "paramError": {
+                  "code": 1001,
+                  "message": "视频ID不能为空",
+                  "data": {}
+                },
+                "queryError": {
+                  "code": 1002,
+                  "message": "查询TS切片列表失败",
+                  "data": {}
+                },
+                "generateError": {
+                  "code": 1003,
+                  "message": "生成m3u8内容失败",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/play/key/{video_id}": {
+      "get": {
+        "tags": ["Play"],
+        "summary": "获取播放的 HLS 加密密钥",
+        "description": "返回视频的 AES-128 加密密钥（二进制格式）",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "视频 ID",
+            "example": "video_123"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "produces": [
+          "application/octet-stream"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应，返回加密密钥（二进制数据）",
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "paramError": {
+                  "code": 1001,
+                  "message": "video_encrypt_id 不能为空",
+                  "data": {}
+                },
+                "queryError": {
+                  "code": 1002,
+                  "message": "获取视频加密信息失败",
+                  "data": {}
+                },
+                "decodeError": {
+                  "code": 1003,
+                  "message": "解码加密 key 失败",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/play/{video_id}/index.c3u8": {
+      "get": {
+        "tags": ["Play"],
+        "summary": "获取 Cine 播放器的加密 M3U8 文件",
+        "description": "返回 Cine 播放器私有协议的加密 M3U8 文件（Base64 编码）",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "video_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "视频 ID",
+            "example": "video_123"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应，返回加密后的 M3U8 信息（Base64 编码）",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            },
+            "examples": {
+              "application/json": {
+                "code": 0,
+                "message": "",
+                "data": {
+                  "info": "dGhpc2lzYW5lbmNyeXB0ZWRtM3U4ZmlsZQ=="
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "paramError": {
+                  "code": 1001,
+                  "message": "视频ID不能为空",
+                  "data": {}
+                },
+                "queryError": {
+                  "code": 1002,
+                  "message": "查询TS切片列表失败",
+                  "data": {}
+                },
+                "encryptError": {
+                  "code": 1003,
+                  "message": "获取视频信息失败 crypto err",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/provide/json": {
+      "get": {
+        "tags": ["Provide"],
+        "summary": "获取视频资源列表（JSON格式）",
+        "description": "资源提供接口，支持获取简化或完整的视频列表。\n- 当不传 ac 参数时，返回简化视频列表\n- 当传入 ac 参数时，返回完整视频列表\n支持分页、标签筛选、时间筛选、ID筛选和关键词搜索。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "ac",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "操作类型，传入此参数返回完整列表，不传返回简化列表",
+            "example": "list"
+          },
+          {
+            "name": "t",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "标签筛选",
+            "example": "动作"
+          },
+          {
+            "name": "h",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "时间筛选（小时）",
+            "example": "24"
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "视频ID列表（逗号分隔）",
+            "example": "1,2,3"
+          },
+          {
+            "name": "wd",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "关键词搜索",
+            "example": "电影"
+          },
+          {
+            "name": "pg",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "页码，默认1",
+            "default": 1,
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "每页数量，默认20",
+            "default": 20,
+            "example": 20
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/SimpleVideoListResponse"
+                },
+                {
+                  "$ref": "#/definitions/FullVideoListResponse"
+                }
+              ]
+            },
+            "examples": {
+              "application/json": {
+                "simpleList": {
+                  "code": 1,
+                  "msg": "数据列表",
+                  "page": 1,
+                  "pagecount": 10,
+                  "limit": "20",
+                  "total": 200,
+                  "list": [
+                    {
+                      "vod_id": 1,
+                      "vod_name": "示例电影",
+                      "type_id": 1,
+                      "type_name": "电影",
+                      "vod_en": "example_movie",
+                      "vod_time": "2024-01-01 12:00:00",
+                      "vod_remarks": "HD",
+                      "vod_play_from": "m3u8",
+                      "vod_play_url": "https://example.com/play.m3u8"
+                    }
+                  ],
+                  "class": []
+                },
+                "fullList": {
+                  "code": 1,
+                  "msg": "数据列表",
+                  "page": 1,
+                  "pagecount": 10,
+                  "limit": "20",
+                  "total": 200,
+                  "list": [
+                    {
+                      "vod_id": 1,
+                      "vod_name": "示例电影",
+                      "type_id": 1,
+                      "type_name": "电影",
+                      "vod_en": "example_movie",
+                      "vod_time": "2024-01-01 12:00:00",
+                      "vod_score": "8.5",
+                      "vod_douban_score": "8.2",
+                      "vod_pic": "https://example.com/pic.jpg",
+                      "vod_blurb": "这是一部精彩的电影",
+                      "vod_actor": "演员1,演员2",
+                      "vod_director": "导演",
+                      "vod_area": "中国",
+                      "vod_lang": "中文",
+                      "vod_year": "2024",
+                      "vod_play_from": "m3u8",
+                      "vod_play_url": "https://example.com/play.m3u8"
+                    }
+                  ]
+                },
+                "errorResponse": {
+                  "code": 0,
+                  "msg": "获取数据失败",
+                  "list": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/provide/xml": {
+      "get": {
+        "tags": ["Provide"],
+        "summary": "获取视频资源列表（XML格式）",
+        "description": "资源提供接口，支持获取简化或完整的视频列表（XML格式响应）。\n- 当不传 ac 参数时，返回简化视频列表\n- 当传入 ac 参数时，返回完整视频列表\n支持分页、标签筛选、时间筛选、ID筛选和关键词搜索。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "ac",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "操作类型，传入此参数返回完整列表，不传返回简化列表",
+            "example": "list"
+          },
+          {
+            "name": "t",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "标签筛选",
+            "example": "动作"
+          },
+          {
+            "name": "h",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "时间筛选（小时）",
+            "example": "24"
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "视频ID列表（逗号分隔）",
+            "example": "1,2,3"
+          },
+          {
+            "name": "wd",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "关键词搜索",
+            "example": "电影"
+          },
+          {
+            "name": "pg",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "页码，默认1",
+            "default": 1,
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "description": "每页数量，默认20",
+            "default": 20,
+            "example": 20
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "schema": {
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/SimpleVideoListResponse"
+                },
+                {
+                  "$ref": "#/definitions/FullVideoListResponse"
+                }
+              ]
+            },
+            "examples": {
+              "application/json": {
+                "simpleList": {
+                  "code": 1,
+                  "msg": "数据列表",
+                  "page": 1,
+                  "pagecount": 10,
+                  "limit": "20",
+                  "total": 200,
+                  "list": [
+                    {
+                      "vod_id": 1,
+                      "vod_name": "示例电影",
+                      "type_id": 1,
+                      "type_name": "电影",
+                      "vod_en": "example_movie",
+                      "vod_time": "2024-01-01 12:00:00",
+                      "vod_remarks": "HD",
+                      "vod_play_from": "m3u8",
+                      "vod_play_url": "https://example.com/play.m3u8"
+                    }
+                  ],
+                  "class": []
+                },
+                "fullList": {
+                  "code": 1,
+                  "msg": "数据列表",
+                  "page": 1,
+                  "pagecount": 10,
+                  "limit": "20",
+                  "total": 200,
+                  "list": [
+                    {
+                      "vod_id": 1,
+                      "vod_name": "示例电影",
+                      "type_id": 1,
+                      "type_name": "电影",
+                      "vod_en": "example_movie",
+                      "vod_time": "2024-01-01 12:00:00",
+                      "vod_score": "8.5",
+                      "vod_douban_score": "8.2",
+                      "vod_pic": "https://example.com/pic.jpg",
+                      "vod_blurb": "这是一部精彩的电影",
+                      "vod_actor": "演员1,演员2",
+                      "vod_director": "导演",
+                      "vod_area": "中国",
+                      "vod_lang": "中文",
+                      "vod_year": "2024",
+                      "vod_play_from": "m3u8",
+                      "vod_play_url": "https://example.com/play.m3u8"
+                    }
+                  ]
+                },
+                "errorResponse": {
+                  "code": 0,
+                  "msg": "获取数据失败",
+                  "list": []
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/provide/save": {
+      "post": {
+        "tags": ["Provide"],
+        "summary": "批量保存视频信息",
+        "description": "批量保存视频信息接口，支持新建或更新。\n- 接收 VodEntity 数组，支持批量保存\n- 如果 vod_id 为 0 或不传，则创建新记录\n- 如果 vod_id 有值，则更新对应记录\n- 使用事务保证批量操作的原子性",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": false,
+            "description": "Bearer access_token"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/VodEntity"
+              },
+              "minItems": 1
+            },
+            "description": "视频实体数据数组"
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "应用名称",
+            "example": "default"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            },
+            "examples": {
+              "application/json": {
+                "code": 0,
+                "message": "",
+                "data": {
+                  "count": 2,
+                  "vod_ids": [1, 2]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "参数错误",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            },
+            "examples": {
+              "application/json": {
+                "paramError": {
+                  "code": 1001,
+                  "message": "参数绑定失败",
+                  "data": {}
+                },
+                "emptyListError": {
+                  "code": 1001,
+                  "message": "视频列表不能为空",
+                  "data": {}
+                },
+                "saveError": {
+                  "code": 1002,
+                  "message": "批量保存视频信息失败",
+                  "data": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Response": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "错误码，0 表示成功",
+          "example": 0
+        },
+        "message": {
+          "type": "string",
+          "description": "返回信息",
+          "example": ""
+        },
+        "data": {
+          "type": "object",
+          "description": "返回数据"
+        }
+      },
+      "required": ["code", "message", "data"]
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "错误码，非 0 表示失败",
+          "example": 1001
+        },
+        "message": {
+          "type": "string",
+          "description": "错误信息",
+          "example": "参数绑定失败"
+        },
+        "data": {
+          "type": "object",
+          "description": "返回数据（通常为空对象）",
+          "example": {}
+        }
+      },
+      "required": ["code", "message", "data"]
+    },
+    "VideoTSSaveRequest": {
+      "type": "object",
+      "required": ["video_id", "key", "iv", "ts_data"],
+      "properties": {
+        "video_id": {
+          "type": "string",
+          "description": "视频 ID",
+          "example": "video_123"
+        },
+        "key": {
+          "type": "string",
+          "description": "视频加密 Key（十六进制字符串）",
+          "example": "0123456789abcdef0123456789abcdef"
+        },
+        "iv": {
+          "type": "string",
+          "description": "视频加密向量（十六进制字符串）",
+          "example": "0123456789abcdef0123456789abcdef"
+        },
+        "ts_data": {
+          "type": "array",
+          "description": "TS 切片数据列表",
+          "items": {
+            "$ref": "#/definitions/VideoTsSaveDataItem"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "VideoTsSaveDataItem": {
+      "type": "object",
+      "required": ["ts_sequence", "ts_path", "duration"],
+      "properties": {
+        "ts_sequence": {
+          "type": "integer",
+          "format": "int64",
+          "description": "TS 切片序号",
+          "example": 0
+        },
+        "ts_path": {
+          "type": "string",
+          "description": "TS 切片路径（URL）",
+          "example": "https://example.com/ts0.ts"
+        },
+        "duration": {
+          "type": "number",
+          "format": "float",
+          "description": "TS 切片时长（秒）",
+          "example": 10.416
+        },
+        "definition": {
+          "type": "string",
+          "description": "清晰度（可选）",
+          "example": "720p"
+        }
+      }
+    },
+    "VideoTSEntity": {
+      "type": "object",
+      "properties": {
+        "video_ts_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "TS 切片 ID",
+          "example": 1
+        },
+        "video_id": {
+          "type": "string",
+          "description": "视频 ID",
+          "example": "video_123"
+        },
+        "ts_sequence": {
+          "type": "integer",
+          "format": "int64",
+          "description": "TS 切片序号",
+          "example": 0
+        },
+        "ts_path": {
+          "type": "string",
+          "description": "TS 切片路径",
+          "example": "https://example.com/ts0.ts"
+        },
+        "duration": {
+          "type": "number",
+          "format": "float",
+          "description": "TS 切片时长（秒）",
+          "example": 10.416
+        },
+        "definition": {
+          "type": "string",
+          "description": "清晰度",
+          "example": "720p"
+        },
+        "create_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "创建时间（时间戳）",
+          "example": 1609459200
+        }
+      }
+    },
+    "SimpleVideoListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "状态码，1表示成功",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "description": "返回消息",
+          "example": "数据列表"
+        },
+        "page": {
+          "type": "integer",
+          "description": "当前页码",
+          "example": 1
+        },
+        "pagecount": {
+          "type": "integer",
+          "description": "总页数",
+          "example": 10
+        },
+        "limit": {
+          "type": "string",
+          "description": "每页数量",
+          "example": "20"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总记录数",
+          "example": 200
+        },
+        "list": {
+          "type": "array",
+          "description": "视频列表",
+          "items": {
+            "$ref": "#/definitions/SimpleVideoItem"
+          }
+        },
+        "class": {
+          "type": "array",
+          "description": "分类列表",
+          "items": {
+            "$ref": "#/definitions/SimpleVideoClassItem"
+          }
+        }
+      },
+      "required": ["code", "msg", "page", "pagecount", "limit", "total", "list", "class"]
+    },
+    "SimpleVideoItem": {
+      "type": "object",
+      "properties": {
+        "vod_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "视频ID",
+          "example": 1
+        },
+        "vod_name": {
+          "type": "string",
+          "description": "视频名称",
+          "example": "示例电影"
+        },
+        "type_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "类型ID",
+          "example": 1
+        },
+        "type_name": {
+          "type": "string",
+          "description": "类型名称",
+          "example": "电影"
+        },
+        "vod_en": {
+          "type": "string",
+          "description": "视频英文名",
+          "example": "example_movie"
+        },
+        "vod_time": {
+          "type": "string",
+          "description": "更新时间（格式化字符串）",
+          "example": "2024-01-01 12:00:00"
+        },
+        "vod_remarks": {
+          "type": "string",
+          "description": "备注",
+          "example": "HD"
+        },
+        "vod_play_from": {
+          "type": "string",
+          "description": "播放来源",
+          "example": "m3u8"
+        },
+        "vod_play_url": {
+          "type": "string",
+          "description": "播放地址",
+          "example": "https://example.com/play.m3u8"
+        }
+      }
+    },
+    "SimpleVideoClassItem": {
+      "type": "object",
+      "properties": {
+        "type_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "类型ID",
+          "example": 1
+        },
+        "type_pid": {
+          "type": "integer",
+          "format": "int64",
+          "description": "父类型ID",
+          "example": 0
+        },
+        "type_name": {
+          "type": "string",
+          "description": "类型名称",
+          "example": "电影"
+        }
+      }
+    },
+    "FullVideoListResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "description": "状态码，1表示成功",
+          "example": 1
+        },
+        "msg": {
+          "type": "string",
+          "description": "返回消息",
+          "example": "数据列表"
+        },
+        "page": {
+          "type": "integer",
+          "description": "当前页码",
+          "example": 1
+        },
+        "pagecount": {
+          "type": "integer",
+          "description": "总页数",
+          "example": 10
+        },
+        "limit": {
+          "type": "string",
+          "description": "每页数量",
+          "example": "20"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总记录数",
+          "example": 200
+        },
+        "list": {
+          "type": "array",
+          "description": "视频列表",
+          "items": {
+            "$ref": "#/definitions/FullVideoItem"
+          }
+        }
+      },
+      "required": ["code", "msg", "page", "pagecount", "limit", "total", "list"]
+    },
+    "FullVideoItem": {
+      "type": "object",
+      "description": "完整视频项，包含所有视频详细信息",
+      "properties": {
+        "vod_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "视频ID",
+          "example": 1
+        },
+        "type_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "类型ID",
+          "example": 1
+        },
+        "type_name": {
+          "type": "string",
+          "description": "类型名称",
+          "example": "电影"
+        },
+        "vod_name": {
+          "type": "string",
+          "description": "视频名称",
+          "example": "示例电影"
+        },
+        "vod_sub": {
+          "type": "string",
+          "description": "视频副标题",
+          "example": "示例副标题"
+        },
+        "vod_en": {
+          "type": "string",
+          "description": "视频英文名",
+          "example": "example_movie"
+        },
+        "vod_pic": {
+          "type": "string",
+          "description": "视频封面图",
+          "example": "https://example.com/pic.jpg"
+        },
+        "vod_blurb": {
+          "type": "string",
+          "description": "视频简介",
+          "example": "这是一部精彩的电影"
+        },
+        "vod_actor": {
+          "type": "string",
+          "description": "演员",
+          "example": "演员1,演员2"
+        },
+        "vod_director": {
+          "type": "string",
+          "description": "导演",
+          "example": "导演"
+        },
+        "vod_area": {
+          "type": "string",
+          "description": "地区",
+          "example": "中国"
+        },
+        "vod_lang": {
+          "type": "string",
+          "description": "语言",
+          "example": "中文"
+        },
+        "vod_year": {
+          "type": "string",
+          "description": "年份",
+          "example": "2024"
+        },
+        "vod_time": {
+          "type": "string",
+          "description": "更新时间（格式化字符串）",
+          "example": "2024-01-01 12:00:00"
+        },
+        "vod_score": {
+          "type": "string",
+          "description": "评分（格式化字符串）",
+          "example": "8.5"
+        },
+        "vod_douban_score": {
+          "type": "string",
+          "description": "豆瓣评分（格式化字符串）",
+          "example": "8.2"
+        },
+        "vod_play_from": {
+          "type": "string",
+          "description": "播放来源",
+          "example": "m3u8"
+        },
+        "vod_play_url": {
+          "type": "string",
+          "description": "播放地址",
+          "example": "https://example.com/play.m3u8"
+        },
+        "vod_remarks": {
+          "type": "string",
+          "description": "备注",
+          "example": "HD"
+        },
+        "vod_duration": {
+          "type": "string",
+          "description": "时长",
+          "example": "120分钟"
+        },
+        "vod_hits": {
+          "type": "integer",
+          "format": "int64",
+          "description": "点击量",
+          "example": 1000
+        }
+      }
+    },
+    "VodEntity": {
+      "type": "object",
+      "description": "VOD视频实体，包含所有视频信息字段",
+      "properties": {
+        "vod_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "视频ID，主键，自增。新建时不传或传0，更新时传入有效ID",
+          "example": 1
+        },
+        "type_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "类型ID",
+          "example": 1
+        },
+        "type_id_1": {
+          "type": "integer",
+          "format": "int64",
+          "description": "类型ID1",
+          "example": 0
+        },
+        "group_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "分组ID",
+          "example": 0
+        },
+        "vod_name": {
+          "type": "string",
+          "description": "视频名称",
+          "example": "示例电影"
+        },
+        "vod_sub": {
+          "type": "string",
+          "description": "视频副标题",
+          "example": "示例副标题"
+        },
+        "vod_en": {
+          "type": "string",
+          "description": "视频英文名",
+          "example": "example_movie"
+        },
+        "vod_status": {
+          "type": "integer",
+          "format": "int8",
+          "description": "视频状态",
+          "example": 1
+        },
+        "vod_letter": {
+          "type": "string",
+          "description": "视频首字母",
+          "example": "S"
+        },
+        "vod_color": {
+          "type": "string",
+          "description": "视频颜色标记",
+          "example": "FF0000"
+        },
+        "vod_tag": {
+          "type": "string",
+          "description": "视频标签",
+          "example": "动作,科幻"
+        },
+        "vod_class": {
+          "type": "string",
+          "description": "视频分类",
+          "example": "电影"
+        },
+        "vod_pic": {
+          "type": "string",
+          "description": "视频封面图",
+          "example": "https://example.com/pic.jpg"
+        },
+        "vod_pic_thumb": {
+          "type": "string",
+          "description": "视频缩略图",
+          "example": "https://example.com/pic_thumb.jpg"
+        },
+        "vod_pic_slide": {
+          "type": "string",
+          "description": "视频幻灯片",
+          "example": "https://example.com/pic_slide.jpg"
+        },
+        "vod_pic_screenshot": {
+          "type": "string",
+          "description": "视频截图",
+          "example": "https://example.com/screenshot.jpg"
+        },
+        "vod_actor": {
+          "type": "string",
+          "description": "演员",
+          "example": "演员1,演员2"
+        },
+        "vod_director": {
+          "type": "string",
+          "description": "导演",
+          "example": "导演"
+        },
+        "vod_writer": {
+          "type": "string",
+          "description": "编剧",
+          "example": "编剧"
+        },
+        "vod_behind": {
+          "type": "string",
+          "description": "幕后",
+          "example": "幕后"
+        },
+        "vod_blurb": {
+          "type": "string",
+          "description": "视频简介",
+          "example": "这是一部精彩的电影"
+        },
+        "vod_remarks": {
+          "type": "string",
+          "description": "备注",
+          "example": "HD"
+        },
+        "vod_pubdate": {
+          "type": "string",
+          "description": "发布日期",
+          "example": "2024-01-01"
+        },
+        "vod_total": {
+          "type": "integer",
+          "format": "int64",
+          "description": "总集数",
+          "example": 1
+        },
+        "vod_serial": {
+          "type": "string",
+          "description": "连载状态",
+          "example": "已完结"
+        },
+        "vod_tv": {
+          "type": "string",
+          "description": "电视台",
+          "example": "CCTV"
+        },
+        "vod_weekday": {
+          "type": "string",
+          "description": "播出日期",
+          "example": "周一"
+        },
+        "vod_area": {
+          "type": "string",
+          "description": "地区",
+          "example": "中国"
+        },
+        "vod_lang": {
+          "type": "string",
+          "description": "语言",
+          "example": "中文"
+        },
+        "vod_year": {
+          "type": "string",
+          "description": "年份",
+          "example": "2024"
+        },
+        "vod_version": {
+          "type": "string",
+          "description": "版本",
+          "example": "HD"
+        },
+        "vod_state": {
+          "type": "string",
+          "description": "状态",
+          "example": "正常"
+        },
+        "vod_author": {
+          "type": "string",
+          "description": "作者",
+          "example": "作者"
+        },
+        "vod_jumpurl": {
+          "type": "string",
+          "description": "跳转URL",
+          "example": "https://example.com"
+        },
+        "vod_tpl": {
+          "type": "string",
+          "description": "模板",
+          "example": "default"
+        },
+        "vod_tpl_play": {
+          "type": "string",
+          "description": "播放模板",
+          "example": "play"
+        },
+        "vod_tpl_down": {
+          "type": "string",
+          "description": "下载模板",
+          "example": "down"
+        },
+        "vod_isend": {
+          "type": "integer",
+          "format": "int8",
+          "description": "是否完结",
+          "example": 1
+        },
+        "vod_lock": {
+          "type": "integer",
+          "format": "int8",
+          "description": "是否锁定",
+          "example": 0
+        },
+        "vod_level": {
+          "type": "integer",
+          "format": "int8",
+          "description": "等级",
+          "example": 0
+        },
+        "vod_copyright": {
+          "type": "integer",
+          "format": "int8",
+          "description": "版权",
+          "example": 0
+        },
+        "vod_points": {
+          "type": "integer",
+          "format": "int64",
+          "description": "积分",
+          "example": 0
+        },
+        "vod_points_play": {
+          "type": "integer",
+          "format": "int64",
+          "description": "播放积分",
+          "example": 0
+        },
+        "vod_points_down": {
+          "type": "integer",
+          "format": "int64",
+          "description": "下载积分",
+          "example": 0
+        },
+        "vod_hits": {
+          "type": "integer",
+          "format": "int64",
+          "description": "点击量",
+          "example": 0
+        },
+        "vod_hits_day": {
+          "type": "integer",
+          "format": "int64",
+          "description": "日点击量",
+          "example": 0
+        },
+        "vod_hits_week": {
+          "type": "integer",
+          "format": "int64",
+          "description": "周点击量",
+          "example": 0
+        },
+        "vod_hits_month": {
+          "type": "integer",
+          "format": "int64",
+          "description": "月点击量",
+          "example": 0
+        },
+        "vod_duration": {
+          "type": "string",
+          "description": "时长",
+          "example": "120分钟"
+        },
+        "vod_up": {
+          "type": "integer",
+          "format": "int64",
+          "description": "点赞数",
+          "example": 0
+        },
+        "vod_down": {
+          "type": "integer",
+          "format": "int64",
+          "description": "点踩数",
+          "example": 0
+        },
+        "vod_score": {
+          "type": "number",
+          "format": "float",
+          "description": "评分",
+          "example": 8.5
+        },
+        "vod_score_all": {
+          "type": "integer",
+          "format": "int64",
+          "description": "评分总和",
+          "example": 0
+        },
+        "vod_score_num": {
+          "type": "integer",
+          "format": "int64",
+          "description": "评分人数",
+          "example": 0
+        },
+        "vod_time": {
+          "type": "integer",
+          "format": "int64",
+          "description": "更新时间（时间戳）",
+          "example": 1704067200
+        },
+        "vod_time_add": {
+          "type": "integer",
+          "format": "int64",
+          "description": "添加时间（时间戳）",
+          "example": 1704067200
+        },
+        "vod_time_hits": {
+          "type": "integer",
+          "format": "int64",
+          "description": "点击时间（时间戳）",
+          "example": 1704067200
+        },
+        "vod_time_make": {
+          "type": "integer",
+          "format": "int64",
+          "description": "制作时间（时间戳）",
+          "example": 1704067200
+        },
+        "vod_trysee": {
+          "type": "integer",
+          "format": "int64",
+          "description": "试看时长（秒）",
+          "example": 0
+        },
+        "vod_douban_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "豆瓣ID",
+          "example": 0
+        },
+        "vod_douban_score": {
+          "type": "number",
+          "format": "float",
+          "description": "豆瓣评分",
+          "example": 8.2
+        },
+        "vod_reurl": {
+          "type": "string",
+          "description": "重定向URL",
+          "example": ""
+        },
+        "vod_rel_vod": {
+          "type": "string",
+          "description": "关联视频",
+          "example": ""
+        },
+        "vod_rel_art": {
+          "type": "string",
+          "description": "关联文章",
+          "example": ""
+        },
+        "vod_pwd": {
+          "type": "string",
+          "description": "密码",
+          "example": ""
+        },
+        "vod_pwd_url": {
+          "type": "string",
+          "description": "密码URL",
+          "example": ""
+        },
+        "vod_pwd_play": {
+          "type": "string",
+          "description": "播放密码",
+          "example": ""
+        },
+        "vod_pwd_play_url": {
+          "type": "string",
+          "description": "播放密码URL",
+          "example": ""
+        },
+        "vod_pwd_down": {
+          "type": "string",
+          "description": "下载密码",
+          "example": ""
+        },
+        "vod_pwd_down_url": {
+          "type": "string",
+          "description": "下载密码URL",
+          "example": ""
+        },
+        "vod_content": {
+          "type": "string",
+          "description": "视频内容",
+          "example": "视频详细内容..."
+        },
+        "vod_play_from": {
+          "type": "string",
+          "description": "播放来源",
+          "example": "m3u8"
+        },
+        "vod_play_server": {
+          "type": "string",
+          "description": "播放服务器",
+          "example": ""
+        },
+        "vod_play_note": {
+          "type": "string",
+          "description": "播放备注",
+          "example": ""
+        },
+        "vod_play_url": {
+          "type": "string",
+          "description": "播放地址",
+          "example": "https://example.com/play.m3u8"
+        },
+        "vod_down_from": {
+          "type": "string",
+          "description": "下载来源",
+          "example": ""
+        },
+        "vod_down_server": {
+          "type": "string",
+          "description": "下载服务器",
+          "example": ""
+        },
+        "vod_down_note": {
+          "type": "string",
+          "description": "下载备注",
+          "example": ""
+        },
+        "vod_down_url": {
+          "type": "string",
+          "description": "下载地址",
+          "example": ""
+        },
+        "vod_plot": {
+          "type": "integer",
+          "format": "int8",
+          "description": "是否有剧情",
+          "example": 0
+        },
+        "vod_plot_name": {
+          "type": "string",
+          "description": "剧情名称",
+          "example": ""
+        },
+        "vod_plot_detail": {
+          "type": "string",
+          "description": "剧情详情",
+          "example": ""
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "JWT Token (可选)，格式为 \"Bearer {token}\"。如果用户已登录，请在请求头中包含此参数；如果未登录，可以不包含此参数。"
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ]
+}

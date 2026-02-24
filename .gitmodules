@@ -1,0 +1,3 @@
+[submodule "player"]
+	path = player
+	url = git@gitlab.com:cinemae/cine_player.git

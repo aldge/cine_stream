@@ -1,0 +1,32 @@
+{
+  "name": "cine-player-sdk",
+  "version": "1.0.0",
+  "description": "CinePlayer JS SDK - 私有协议HLS视频播放器 SDK",
+  "main": "dist/cine-player.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development && shx rm -rf public/dist && shx cp -r dist public/",
+    "dev": "webpack serve --mode development",
+    "start": "http-server ./public -p 8080"
+  },
+  "keywords": [
+    "video",
+    "player",
+    "sdk",
+    "m3u8",
+    "hls"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.0.0",
+    "shx": "^0.4.0",
+    "terser-webpack-plugin": "^5.3.16",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^5.0.0",
+    "webpack-dev-server": "^4.0.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.2.0"
+  }
+}
