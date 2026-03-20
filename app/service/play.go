@@ -8,12 +8,12 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/aldge/cine_stream/app/dao"
+	"github.com/aldge/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/config"
+	"github.com/aldge/cine_stream/utils"
+	"github.com/aldge/gopkg/app"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/app/dao"
-	"gitlab.com/cinemae/cine_stream/app/entity"
-	"gitlab.com/cinemae/cine_stream/config"
-	"gitlab.com/cinemae/cine_stream/utils"
-	"gitlab.com/cinemae/gopkg/app"
 )
 
 // Play 播放业务逻辑

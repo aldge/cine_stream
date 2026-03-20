@@ -6,9 +6,9 @@ import (
 	"log"
 	"time"
 
-	"gitlab.com/cinemae/cine_stream/cmd"
-	"gitlab.com/cinemae/cine_stream/utils"
-	klog "gitlab.com/cinemae/gopkg/log"
+	"github.com/aldge/cine_stream/cmd"
+	"github.com/aldge/cine_stream/utils"
+	klog "github.com/aldge/gopkg/log"
 	"gopkg.in/yaml.v3"
 )
 

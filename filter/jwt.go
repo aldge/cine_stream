@@ -4,12 +4,12 @@ import (
 	"reflect"
 	"strings"
 
-	"gitlab.com/cinemae/cine_stream/app/entity"
-	"gitlab.com/cinemae/cine_stream/consts"
-	"gitlab.com/cinemae/cine_stream/logger"
+	"github.com/aldge/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/consts"
+	"github.com/aldge/cine_stream/logger"
 
+	passport "github.com/aldge/gopkg/casdoor"
 	"github.com/gin-gonic/gin"
-	passport "gitlab.com/cinemae/gopkg/casdoor"
 )
 
 var (

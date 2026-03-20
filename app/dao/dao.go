@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.com/cinemae/cine_stream/config"
-	"gitlab.com/cinemae/cine_stream/logger"
+	"github.com/aldge/cine_stream/config"
+	"github.com/aldge/cine_stream/logger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"

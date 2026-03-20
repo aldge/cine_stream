@@ -3,7 +3,7 @@ package dao
 import (
 	"context"
 
-	"gitlab.com/cinemae/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/app/entity"
 	"gorm.io/gorm"
 )
 

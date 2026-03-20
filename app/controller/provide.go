@@ -3,10 +3,10 @@ package controller
 import (
 	"net/http"
 
+	"github.com/aldge/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/app/service"
+	"github.com/aldge/cine_stream/logger"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/app/entity"
-	"gitlab.com/cinemae/cine_stream/app/service"
-	"gitlab.com/cinemae/cine_stream/logger"
 )
 
 // ProvideIndex 资源提供接口

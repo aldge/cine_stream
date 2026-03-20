@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"gitlab.com/cinemae/cine_stream/logger"
-	"gitlab.com/cinemae/gopkg/app"
-	"gitlab.com/cinemae/gopkg/errors"
+	"github.com/aldge/cine_stream/logger"
+	"github.com/aldge/gopkg/app"
+	"github.com/aldge/gopkg/errors"
 
 	"github.com/gin-gonic/gin"
 )

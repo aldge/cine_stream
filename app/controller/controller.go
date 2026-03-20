@@ -4,7 +4,7 @@ package controller
 import (
 	"net/http"
 
-	"gitlab.com/cinemae/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/app/entity"
 	"github.com/gin-gonic/gin"
 )
 

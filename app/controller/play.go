@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/aldge/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/app/service"
+	"github.com/aldge/cine_stream/logger"
+	"github.com/aldge/cine_stream/utils"
+	"github.com/aldge/gopkg/app"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/app/entity"
-	"gitlab.com/cinemae/cine_stream/app/service"
-	"gitlab.com/cinemae/cine_stream/logger"
-	"gitlab.com/cinemae/cine_stream/utils"
-	"gitlab.com/cinemae/gopkg/app"
 )
 
 const (

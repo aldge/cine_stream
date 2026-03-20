@@ -15,7 +15,7 @@ services:
 
   stream:
     # 使用 gitlab 上制作好的镜像
-    # image: registry.gitlab.com/cinemae/cine_stream
+    # image: registry.github.com/aldge/cine_stream
     # 自己创建本地镜像
     image: cine_stream
     container_name: cine_stream

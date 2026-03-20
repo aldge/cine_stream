@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/aldge/cine_stream/consts"
+	"github.com/aldge/cine_stream/utils"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/consts"
-	"gitlab.com/cinemae/cine_stream/utils"
 )
 
 // ContextWithRequestID context 添加请求 ID

@@ -3,10 +3,10 @@ package logger
 import (
 	"context"
 
+	"github.com/aldge/cine_stream/config"
+	"github.com/aldge/cine_stream/consts"
+	klog "github.com/aldge/gopkg/log"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/config"
-	"gitlab.com/cinemae/cine_stream/consts"
-	klog "gitlab.com/cinemae/gopkg/log"
 )
 
 const (

@@ -3,10 +3,10 @@ package router
 import (
 	"net/http"
 
+	"github.com/aldge/cine_stream/app/controller"
+	"github.com/aldge/cine_stream/filter"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/app/controller"
-	"gitlab.com/cinemae/cine_stream/filter"
 )
 
 // router 路由相关

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"time"
 
-	"gitlab.com/cinemae/cine_stream/app/dao"
-	"gitlab.com/cinemae/cine_stream/app/entity"
-	"gitlab.com/cinemae/cine_stream/logger"
+	"github.com/aldge/cine_stream/app/dao"
+	"github.com/aldge/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/logger"
 )
 
 // VideoTS TS切片业务逻辑

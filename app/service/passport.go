@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aldge/cine_stream/app/entity"
+	"github.com/aldge/cine_stream/config"
+	"github.com/aldge/cine_stream/logger"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/cine_stream/app/entity"
-	"gitlab.com/cinemae/cine_stream/config"
-	"gitlab.com/cinemae/cine_stream/logger"
 )
 
 // PassportPlayRightsResponse Passport 播放权限响应结构

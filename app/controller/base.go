@@ -2,9 +2,10 @@ package controller
 
 import (
 	"fmt"
-	"gitlab.com/cinemae/cine_stream/utils"
+	"github.com/aldge/cine_stream/utils"
 	"github.com/gin-gonic/gin"
 )
+
 type ginCtx gin.Context
 
 // 一些基础的公共方法

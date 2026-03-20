@@ -5,8 +5,8 @@ import (
 	"hash/fnv"
 	"strconv"
 
+	"github.com/aldge/gopkg/app"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/cinemae/gopkg/app"
 )
 
 // Base 基础的 dao
